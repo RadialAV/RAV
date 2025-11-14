@@ -1,0 +1,34 @@
+/* css/theme.css */
+
+:root {
+    /* Dark theme (default) */
+    --bg: #0b0b0c;
+    --text: #f5f6f8;
+    --muted: #a1a1aa;
+    --surface: #151517;
+    --surface-2: #1a1b1e;
+    --border: #2b2b2e;
+    --border-strong: #3a3a3f;
+    --accent: #1e90ff;
+    --accent-contrast: #ffffff;
+    --shadow: rgba(0, 0, 0, 0.4);
+    --header-grad-top: rgba(12, 12, 14, 0.92);
+    --header-grad-bottom: rgba(12, 12, 14, 0.65);
+    --player-overlay-grad: linear-gradient(180deg, rgba(17,17,17,0.92) 0%, rgba(17,17,17,0.85) 100%);
+}
+
+[data-theme='light'] {
+    --bg: #f6f7fb;
+    --text: #0f1115;
+    --muted: #6b7280;
+    --surface: #ffffff;
+    --surface-2: #f7f8fb;
+    --border: #e6e7eb;
+    --border-strong: #d9dbe1;
+    --accent: #1e90ff;
+    --accent-contrast: #ffffff;
+    --shadow: rgba(0, 0, 0, 0.15);
+    --header-grad-top: rgba(255, 255, 255, 0.92);
+    --header-grad-bottom: rgba(255, 255, 255, 0.68);
+    --player-overlay-grad: linear-gradient(180deg, rgba(255,255,255,0.90) 0%, rgba(255,255,255,0.80) 100%);
+}

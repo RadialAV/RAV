@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gerador de Ícones Radial AV</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #000;
+            color: #fff;
+        }
+        canvas {
+            border: 1px solid #333;
+            margin: 10px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        button {
+            background: #1e90ff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #1565c0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gerador de Ícones PWA - Radial AV</h1>
+    <p>Clique nos botões para descarregar os ícones:</p>
+    <div>
+        <button onclick="downloadIcon(72)">Download 72x72</button>
+        <button onclick="downloadIcon(96)">Download 96x96</button>
+        <button onclick="downloadIcon(192)">Download 192x192</button>
+        <button onclick="downloadIcon(512)">Download 512x512</button>
+        <button onclick="downloadAll()">Download Todos</button>
+    </div>
+    <div class="container" id="preview"></div>
+
+    <script>
+        function createIcon(size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+
+            // Fundo gradiente
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#1e90ff');
+            gradient.addColorStop(1, '#0d47a1');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+
+            // Círculo externo
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.lineWidth = size * 0.05;
+            ctx.beginPath();
+            ctx.arc(size / 2, size / 2, size * 0.4, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Texto "R"
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `bold ${size * 0.5}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('R', size / 2, size / 2);
+
+            // Subtexto "AV"
+            ctx.font = `bold ${size * 0.12}px Arial`;
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.fillText('A V', size / 2, size * 0.75);
+
+            return canvas;
+        }
+
+        function downloadIcon(size) {
+            const canvas = createIcon(size);
+            const link = document.createElement('a');
+            link.download = `icon-${size}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function downloadAll() {
+            [72, 96, 192, 512].forEach((size, index) => {
+                setTimeout(() => downloadIcon(size), index * 500);
+            });
+        }
+
+        // Preview
+        window.addEventListener('load', () => {
+            const preview = document.getElementById('preview');
+            [72, 96, 192, 512].forEach(size => {
+                const canvas = createIcon(size);
+                canvas.style.width = '150px';
+                canvas.style.height = '150px';
+                const label = document.createElement('div');
+                label.textContent = `${size}x${size}`;
+                label.style.textAlign = 'center';
+                const wrapper = document.createElement('div');
+                wrapper.appendChild(canvas);
+                wrapper.appendChild(label);
+                preview.appendChild(wrapper);
+            });
+        });
+    </script>
+</body>
+</html>

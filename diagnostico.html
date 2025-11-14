@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico - Radial AV</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #00ff00;
+            text-align: center;
+            border-bottom: 2px solid #00ff00;
+            padding-bottom: 10px;
+        }
+        .test {
+            background: #2a2a2a;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .test h3 {
+            color: #00ff00;
+            margin-top: 0;
+        }
+        .success {
+            color: #00ff00;
+        }
+        .error {
+            color: #ff0000;
+        }
+        .warning {
+            color: #ffaa00;
+        }
+        pre {
+            background: #000;
+            padding: 10px;
+            border-radius: 3px;
+            overflow-x: auto;
+        }
+        button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        button:hover {
+            background: #00cc00;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #000;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 DIAGNÓSTICO RADIAL AV</h1>
+    
+    <div class="test">
+        <h3>📋 TESTE 1: Verificar Ficheiros Carregados</h3>
+        <button onclick="teste1()">▶️ Executar Teste 1</button>
+        <div id="result1" class="result"></div>
+    </div>
+
+    <div class="test">
+        <h3>🔧 TESTE 2: Verificar Service Worker</h3>
+        <button onclick="teste2()">▶️ Executar Teste 2</button>
+        <div id="result2" class="result"></div>
+    </div>
+
+    <div class="test">
+        <h3>📦 TESTE 3: Verificar Cache</h3>
+        <button onclick="teste3()">▶️ Executar Teste 3</button>
+        <div id="result3" class="result"></div>
+    </div>
+
+    <div class="test">
+        <h3>🎨 TESTE 4: Testar Render de Botões</h3>
+        <button onclick="teste4()">▶️ Executar Teste 4</button>
+        <div id="result4" class="result"></div>
+    </div>
+
+    <div class="test">
+        <h3>🧹 AÇÃO: Limpar Tudo</h3>
+        <button onclick="limparTudo()">🔥 LIMPAR TUDO E RECARREGAR</button>
+        <div id="resultLimpar" class="result"></div>
+    </div>
+
+    <div class="test">
+        <h3>📖 INSTRUÇÕES FINAIS</h3>
+        <div style="color: #fff;">
+            <p><strong>Depois de executar todos os testes:</strong></p>
+            <ol>
+                <li>Clica em "🔥 LIMPAR TUDO E RECARREGAR"</li>
+                <li>Aguarda a página recarregar</li>
+                <li>Vai para <a href="/" style="color: #00ff00;">http://localhost:8080</a></li>
+                <li>Pressiona F12 → Network → ✓ Disable cache</li>
+                <li>Testa as secções Recentes, Releases e Artistas</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        async function teste1() {
+            const result = document.getElementById('result1');
+            result.innerHTML = '⏳ A verificar ficheiros...';
+            
+            const resources = performance.getEntriesByType('resource');
+            const jsFiles = resources.filter(r => r.name.includes('.js'));
+            
+            let html = '<div class="success">✅ Ficheiros JS Carregados:</div><pre>';
+            jsFiles.forEach(file => {
+                const filename = file.name.split('/').pop();
+                html += `${filename}\n`;
+            });
+            html += '</pre>';
+            
+            // Verificar ficheiros específicos
+            const required = ['recent.js', 'releases.js', 'artists.js', 'playlists.js', 'render.js'];
+            html += '<div style="margin-top:10px;"><strong>Ficheiros Críticos:</strong></div>';
+            
+            required.forEach(file => {
+                const found = jsFiles.some(r => r.name.includes(file));
+                if (found) {
+                    html += `<div class="success">✅ ${file}</div>`;
+                } else {
+                    html += `<div class="error">❌ ${file} NÃO ENCONTRADO!</div>`;
+                }
+            });
+            
+            result.innerHTML = html;
+        }
+
+        async function teste2() {
+            const result = document.getElementById('result2');
+            result.innerHTML = '⏳ A verificar Service Workers...';
+            
+            if (!('serviceWorker' in navigator)) {
+                result.innerHTML = '<div class="warning">⚠️ Service Workers não suportados</div>';
+                return;
+            }
+            
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            
+            let html = '';
+            if (registrations.length === 0) {
+                html = '<div class="success">✅ Nenhum Service Worker registado (BOM!)</div>';
+            } else {
+                html = '<div class="error">❌ Service Workers encontrados:</div><pre>';
+                registrations.forEach(reg => {
+                    html += `Scope: ${reg.scope}\n`;
+                    html += `State: ${reg.active?.state || 'inactive'}\n\n`;
+                });
+                html += '</pre>';
+                html += '<div class="warning">⚠️ Estes Service Workers podem estar a causar cache!</div>';
+            }
+            
+            result.innerHTML = html;
+        }
+
+        async function teste3() {
+            const result = document.getElementById('result3');
+            result.innerHTML = '⏳ A verificar cache...';
+            
+            const cacheNames = await caches.keys();
+            
+            let html = '';
+            if (cacheNames.length === 0) {
+                html = '<div class="success">✅ Nenhum cache encontrado (BOM!)</div>';
+            } else {
+                html = '<div class="error">❌ Caches encontrados:</div><pre>';
+                cacheNames.forEach(name => {
+                    html += `${name}\n`;
+                });
+                html += '</pre>';
+                html += '<div class="warning">⚠️ Estes caches podem conter ficheiros antigos!</div>';
+            }
+            
+            result.innerHTML = html;
+        }
+
+        async function teste4() {
+            const result = document.getElementById('result4');
+            result.innerHTML = '⏳ A testar render...';
+            
+            try {
+                // Simular um track
+                const mockTrack = {
+                    id: 999,
+                    title: 'Teste',
+                    artist: 'Teste',
+                    duration: '3:00',
+                    cover: '🧪'
+                };
+                
+                // Tentar importar o módulo render
+                const renderModule = await import('./js/ui/render.js');
+                
+                if (renderModule.createTrackItem) {
+                    // Testar com showActions = true
+                    const html = renderModule.createTrackItem(mockTrack, 0, false, true);
+                    
+                    const hasHeart = html.includes('❤️') || html.includes('🤍');
+                    const hasPlus = html.includes('➕');
+                    
+                    let resultHtml = '<div><strong>Teste de Render:</strong></div>';
+                    
+                    if (hasHeart && hasPlus) {
+                        resultHtml += '<div class="success">✅ Botões estão a ser renderizados!</div>';
+                        resultHtml += '<div class="success">✅ Código está CORRETO!</div>';
+                        resultHtml += '<div class="warning">⚠️ Se não vês botões na app, é problema de CACHE!</div>';
+                    } else {
+                        resultHtml += '<div class="error">❌ Botões NÃO estão a ser renderizados</div>';
+                        resultHtml += '<div class="error">❌ Problema no código!</div>';
+                    }
+                    
+                    resultHtml += '<details><summary>Ver HTML gerado</summary><pre>' + 
+                                  html.replace(/</g, '&lt;').replace(/>/g, '&gt;') + 
+                                  '</pre></details>';
+                    
+                    result.innerHTML = resultHtml;
+                } else {
+                    result.innerHTML = '<div class="error">❌ Função createTrackItem não encontrada!</div>';
+                }
+            } catch (error) {
+                result.innerHTML = '<div class="error">❌ Erro ao testar: ' + error.message + '</div>';
+            }
+        }
+
+        async function limparTudo() {
+            const result = document.getElementById('resultLimpar');
+            result.innerHTML = '⏳ A limpar tudo...';
+            
+            let steps = [];
+            
+            try {
+                // 1. Desregistar Service Workers
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                for (let reg of registrations) {
+                    await reg.unregister();
+                    steps.push('✅ Service Worker desregistado');
+                }
+                
+                // 2. Limpar todos os caches
+                const cacheNames = await caches.keys();
+                for (let name of cacheNames) {
+                    await caches.delete(name);
+                    steps.push(`✅ Cache "${name}" eliminado`);
+                }
+                
+                // 3. Limpar localStorage (opcional - descomentado para manter dados)
+                // localStorage.clear();
+                // steps.push('✅ LocalStorage limpo');
+                
+                let html = '<div class="success">✅ LIMPEZA COMPLETA!</div>';
+                html += '<pre>' + steps.join('\n') + '</pre>';
+                html += '<div class="success">✅ A recarregar em 2 segundos...</div>';
+                
+                result.innerHTML = html;
+                
+                // Recarregar página
+                setTimeout(() => {
+                    window.location.href = '/?nocache=' + Date.now();
+                }, 2000);
+                
+            } catch (error) {
+                result.innerHTML = '<div class="error">❌ Erro: ' + error.message + '</div>';
+            }
+        }
+    </script>
+</body>
+</html>

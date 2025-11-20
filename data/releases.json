@@ -1,0 +1,48 @@
+[
+    {
+        "id": "rav01",
+        "title": "R.A.V 01",
+        "subtitle": "Electronic Music Collective - First Compilation",
+        "cover": "R",
+        "coverUrl": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/radial_logo.png",
+        "date": "2024-11-01",
+        "year": "2024",
+        "description": "O primeiro lançamento do coletivo Radial AV reúne 12 faixas de música eletrónica de artistas emergentes. Uma viagem sonora através de techno, house e ambient, refletindo a diversidade e criatividade do coletivo português.",
+        "trackIds": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        "genres": ["Techno", "House", "Ambient"],
+        "totalDuration": "65:23",
+        "credits": {
+            "mastering": "Radial AV Team",
+            "artwork": "Radial AV Design",
+            "compilation": "Radial AV Collective"
+        },
+        "links": {
+            "bandcamp": "https://radialav.bandcamp.com",
+            "spotify": "https://open.spotify.com/artist/radialav",
+            "instagram": "https://instagram.com/radial.av",
+            "soundcloud": "https://soundcloud.com/radialav"
+        },
+        "featured": true
+    },
+    {
+        "id": "rav02",
+        "title": "R.A.V 02",
+        "subtitle": "Summer Vibes Collection",
+        "cover": "R2",
+        "coverUrl": null,
+        "date": "2025-06-01",
+        "year": "2025",
+        "description": "Em preparação. O segundo volume da série R.A.V trará 15 faixas com vibes de verão, explorando sonoridades mais melódicas e orgânicas.",
+        "trackIds": [],
+        "genres": ["House", "Deep House", "Melodic Techno"],
+        "totalDuration": "TBA",
+        "credits": {
+            "mastering": "TBA",
+            "artwork": "TBA",
+            "compilation": "Radial AV Collective"
+        },
+        "links": {},
+        "featured": false,
+        "comingSoon": true
+    }
+]

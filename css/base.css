@@ -1,0 +1,29 @@
+/* css/base.css */
+
+.hidden {
+    display: none !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mb-1 {
+    margin-bottom: 1rem;
+}
+
+/* Background image presets (opt-in) */
+body.bg-image-1 {
+    background: #000 url('../assets/ChatGPT Image 3_11_2025, 18_13_23.png') center / cover fixed no-repeat;
+}
+
+body.bg-image-2 {
+    background: #000 url('../assets/ChatGPT Image 3_11_2025, 18_18_12.png') center / cover fixed no-repeat;
+}
+
+body.bg-image-app {
+    background:
+        radial-gradient(65% 55% at 50% 10%, rgba(30, 144, 255, 0.10) 0%, rgba(0, 0, 0, 0) 60%),
+        linear-gradient(180deg, rgba(10, 10, 10, 0.78) 0%, rgba(10, 10, 10, 0.35) 45%, rgba(10, 10, 10, 0.78) 100%),
+        url('../assets/BG.jpg') center / cover fixed no-repeat #000;
+}

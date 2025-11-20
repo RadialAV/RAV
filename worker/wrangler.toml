@@ -1,0 +1,14 @@
+name = "radial-r2-api"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+logpush = true
+
+# Bind the R2 bucket (configure in Cloudflare dashboard or via wrangler)
+r2_buckets = [
+  { binding = "R2", bucket_name = "radialteste" }
+]
+
+# Optional: add routes when deploying to production
+# routes = [
+#   { pattern = "api.example.com/*", zone_id = "<your-zone-id>" }
+# ]

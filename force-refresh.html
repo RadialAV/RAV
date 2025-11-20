@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forçar Atualização - Radial AV</title>
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #1e90ff;
+            margin-bottom: 2rem;
+        }
+        .instructions {
+            max-width: 600px;
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #333;
+            margin-bottom: 2rem;
+        }
+        button {
+            background: #1e90ff;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #1565c0;
+        }
+        .step {
+            margin: 15px 0;
+            padding: 10px;
+            background: #222;
+            border-left: 3px solid #1e90ff;
+            text-align: left;
+        }
+        .success {
+            color: #4CAF50;
+            font-weight: bold;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔄 Forçar Atualização da App</h1>
+    
+    <div class="instructions">
+        <h2>Os botões não aparecem?</h2>
+        <p>Sigue estes passos para limpar a cache:</p>
+        
+        <div class="step">
+            <strong>1️⃣ Limpar Cache do Browser</strong><br>
+            Pressiona: <code>Ctrl + Shift + R</code> (Windows/Linux)<br>
+            ou: <code>Cmd + Shift + R</code> (Mac)
+        </div>
+        
+        <div class="step">
+            <strong>2️⃣ Limpar Service Worker</strong><br>
+            <button onclick="clearServiceWorker()">Limpar Service Worker</button>
+        </div>
+        
+        <div class="step">
+            <strong>3️⃣ Limpar Cache Completa</strong><br>
+            <button onclick="clearAllCache()">Limpar Tudo</button>
+        </div>
+        
+        <div class="step">
+            <strong>4️⃣ Recarregar App</strong><br>
+            <button onclick="goToApp()">Ir para App</button>
+        </div>
+        
+        <p class="success" id="success">✅ Cache limpa! Agora recarrega a app.</p>
+    </div>
+
+    <div class="instructions">
+        <h3>🔍 Verificar Consola</h3>
+        <p>Se ainda não funcionar:</p>
+        <ol style="text-align: left;">
+            <li>Abre DevTools (F12)</li>
+            <li>Vai ao separador "Console"</li>
+            <li>Verifica se há erros em vermelho</li>
+            <li>Copia os erros e mostra-me</li>
+        </ol>
+    </div>
+
+    <script>
+        async function clearServiceWorker() {
+            try {
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (let registration of registrations) {
+                        await registration.unregister();
+                    }
+                    document.getElementById('success').style.display = 'block';
+                    alert('✅ Service Worker removido!');
+                } else {
+                    alert('ℹ️ Service Worker não está ativo');
+                }
+            } catch (error) {
+                alert('❌ Erro: ' + error.message);
+            }
+        }
+
+        async function clearAllCache() {
+            try {
+                // Limpar Service Worker
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (let registration of registrations) {
+                        await registration.unregister();
+                    }
+                }
+                
+                // Limpar Cache Storage
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(
+                        cacheNames.map(cacheName => caches.delete(cacheName))
+                    );
+                }
+                
+                // Limpar localStorage
+                localStorage.clear();
+                
+                // Limpar sessionStorage
+                sessionStorage.clear();
+                
+                document.getElementById('success').style.display = 'block';
+                alert('✅ Tudo limpo! Agora vai para a app.');
+            } catch (error) {
+                alert('❌ Erro: ' + error.message);
+            }
+        }
+
+        function goToApp() {
+            window.location.href = '/index.html?t=' + Date.now();
+        }
+    </script>
+</body>
+</html>

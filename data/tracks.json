@@ -1,0 +1,110 @@
+[
+    {
+        "id": 1,
+        "title": "Nao Passarao",
+        "artist": "A Guy From 1990",
+        "duration": "4:23",
+        "cover": "N",
+        "coverUrl": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/radial_logo.png",
+        "url": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/A%20Guy%20From%201990%20-%20N%C3%A3o%20Passar%C3%A3o.aif"
+    },
+    {
+        "id": 2,
+        "title": "Macaroni Preview",
+        "artist": "Axis Uno & Heck",
+        "duration": "3:45",
+        "cover": "M",
+        "coverUrl": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/radial_logo.png",
+        "url": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/Axis%20Uno%20%26%20Heck%20-%20Macaroni%20Preview.mp3"
+    },
+    {
+        "id": 3,
+        "title": "Acid Atmos",
+        "artist": "Brownstrobe",
+        "duration": "5:12",
+        "cover": "A",
+        "coverUrl": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/radial_logo.png",
+        "url": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/Brownstrobe%20-Acid%20atmos.mp3"
+    },
+    {
+        "id": 4,
+        "title": "Sequencer (Original Mix)",
+        "artist": "Daniel De Roma",
+        "duration": "6:33",
+        "cover": "S",
+        "coverUrl": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/radial_logo.png",
+        "url": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/Daniel%20De%20Roma%20-%20Sequencer%20(Original%20Mix)%20-%20Premaster%2044100%20khz%20%2C%2024%20bit%20-6%20db.wav"
+    },
+    {
+        "id": 5,
+        "title": "Breaking The Habbit",
+        "artist": "HECK",
+        "duration": "4:55",
+        "cover": "B",
+        "coverUrl": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/radial_logo.png",
+        "url": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/HECK%20-%20Breaking%20The%20Habbit%20(1).wav"
+    },
+    {
+        "id": 6,
+        "title": "Breath In (Original Mix)",
+        "artist": "Kelson",
+        "duration": "5:33",
+        "cover": "B",
+        "coverUrl": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/radial_logo.png",
+        "url": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/Kelson%20-%20Breath%20in%20(Original%20Mix)%20MASTER%206%20(1).mp3"
+    },
+    {
+        "id": 7,
+        "title": "Overthink",
+        "artist": "Luis Bravo",
+        "duration": "7:21",
+        "cover": "O",
+        "coverUrl": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/radial_logo.png",
+        "url": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/Luis%20Bravo%20-Overthink%20.Premaster.wav"
+    },
+    {
+        "id": 8,
+        "title": "3 Days",
+        "artist": "Mandarin",
+        "duration": "4:44",
+        "cover": "3",
+        "coverUrl": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/radial_logo.png",
+        "url": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/Mandarin%20-%203%20Days%20-%20PREMASTER%2048000%2024.wav"
+    },
+    {
+        "id": 9,
+        "title": "Ácid",
+        "artist": "MezZaDri",
+        "duration": "6:18",
+        "cover": "Á",
+        "coverUrl": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/radial_logo.png",
+        "url": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/MezZaDri%20-%20%C3%81cid%20mixdown%20%2B--6.wav"
+    },
+    {
+        "id": 10,
+        "title": "Ajna",
+        "artist": "Nicola Landgraf",
+        "duration": "5:27",
+        "cover": "A",
+        "coverUrl": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/radial_logo.png",
+        "url": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/Nicola%20Landgraf%20-%20Ajna%20(44khz%2032bit%20-6db).wav"
+    },
+    {
+        "id": 11,
+        "title": "Ryokō",
+        "artist": "Pedro Barros",
+        "duration": "8:15",
+        "cover": "R",
+        "coverUrl": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/radial_logo.png",
+        "url": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/Pedro%20Barros%20-%20Ryok%C5%8D.wav"
+    },
+    {
+        "id": 12,
+        "title": "Simbaye",
+        "artist": "Reu.Ven",
+        "duration": "4:33",
+        "cover": "S",
+        "coverUrl": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/radial_logo.png",
+        "url": "https://pub-e72ff5dcfda64cd79c35224862a96f36.r2.dev/R.A.V%2001/Reu.Ven-Simbaye.wav"
+    }
+]

@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Radial AV - Electronic Music Collective</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Aplicação oficial do coletivo de música eletrônica Radial AV">
+    <meta name="theme-color" content="#1e90ff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Radial AV">
+    <meta name="msapplication-TileColor" content="#1e90ff">
+    
+    <!-- CSP (report-only) to prepare for strict mode; allows current external deps -->
+    <meta http-equiv="Content-Security-Policy-Report-Only" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://widgets.shotgun.live https://js.stripe.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https://unpkg.com https://*.supabase.co https://*.supabase.in https://i.ytimg.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co https://*.supabase.in https://radialworker.radial-audiov.workers.dev https://api.stripe.com; frame-src https://www.youtube-nocookie.com https://js.stripe.com;">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://radialworker.radial-audiov.workers.dev" crossorigin>
+    <link rel="dns-prefetch" href="https://radialworker.radial-audiov.workers.dev">
+    
+    <!-- Ícones para diferentes dispositivos -->
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" sizes="192x192" type="image/png" href="assets/ChatGPT Image 3_11_2025, 18_13_23.png">
+    
+    <!-- CSS Modularizado -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/modals.css">
+    <link rel="stylesheet" href="css/mobile.css">
+    <script>
+      window.DATA_SOURCE = 'supabase';
+      window.R2_API_URL = 'https://radialworker.radial-audiov.workers.dev';
+    </script>
+ </head>
+ <body class="bg-image-app uses-vector-icons">
+    <div class="app-container">
+        <header class="header">
+            <div class="header-top">
+                <div class="logo">
+                    <img src="assets/logo.png" alt="Radial AV" class="app-logo">
+                </div>
+                <div class="header-title">
+                    <h1>Radial AV</h1>
+                    <p class="subtitle">ELECTRONIC MUSIC COLLECTIVE</p>
+                </div>
+                <div class="header-actions">
+                    <button id="cart-open-btn" class="btn btn-ghost btn-sm" type="button" title="Carrinho">🛒 <span id="cart-badge" style="display:none;margin-left:6px;min-width:18px;height:18px;border-radius:9999px;background:#1e90ff;color:#fff;font-weight:700;font-size:0.75rem;line-height:18px;text-align:center;">0</span></button>
+                    <button id="settings-open-btn" class="btn btn-ghost btn-sm" type="button" title="Definições" style="display:none">⚙️</button>
+                    <button id="auth-signin" class="btn btn-primary btn-sm" type="button">Entrar com Google</button>
+                </div>
+            </div>
+            <nav class="nav-container icon-only" id="nav-container">
+                <button class="nav-btn active" data-section="home" data-icon="🏠">🏠 Início</button>
+                <button class="nav-btn" data-section="music" data-icon="🎵">🎵 Música</button>
+                <button class="nav-btn" data-section="recent" data-icon="🕒" style="display:none">🕒 Recentes</button>
+                <button class="nav-btn" data-section="library" data-icon="📚">📚 Biblioteca</button>
+                <button class="nav-btn" data-section="releases" data-icon="💿" style="display:none">💿 Releases</button>
+                <button class="nav-btn" data-section="artists" data-icon="👥" style="display:none">👥 Artistas</button>
+                <button class="nav-btn" data-section="videos" data-icon="📹" style="display:none">📹 Vídeos</button>
+                <button class="nav-btn" data-section="events" data-icon="🎪">🎪 Eventos</button>
+                <button class="nav-btn" data-section="news" data-icon="📰" style="display:none">📰 Notícias</button>
+                <button class="nav-btn" data-section="fm" data-icon="📻">📻 FM + 💬 Chat</button>
+                <button class="nav-btn" data-section="about" data-icon="ℹ️">ℹ️ About</button>
+                <button class="nav-btn" data-section="admin" data-icon="🛠️" id="nav-admin-btn" style="display:none">🛠️ Admin</button>
+                <button class="nav-btn" data-section="label-admin" data-icon="🏷️" id="nav-labeladmin-btn" style="display:none">🏷️ Label Admin</button>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <!-- Página Inicial -->
+            <div id="home-section" class="section active">
+                <div class="search-section">
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="🔍 Pesquisar músicas, artistas, releases...">
+                    </div>
+                    <div class="section-header" style="margin-top:0.5rem;">
+                        <h3>⭐ Destaques</h3>
+                    </div>
+                    <div class="home-featured" id="home-featured"></div>
+                    
+                    <div id="search-results" class="search-results">
+                        <div class="track-grid" id="search-tracks"></div>
+                    </div>
+                    
+                    <div id="random-tracks" class="track-grid">
+                        <!-- Músicas aleatórias serão carregadas aqui -->
+                    </div>
+                </div>
+
+                <div class="events-section">
+                    <div class="section-header">
+                        <h3>🎪 Eventos</h3>
+                        <button class="view-all-btn" data-section="events">Ver Todos</button>
+                    </div>
+                    <div id="home-events-embed"></div>
+                </div>
+
+                <div class="news-section" style="display:none;">
+                    <div class="section-header">
+                        <h3>📰 Últimas Notícias</h3>
+                        <button class="view-all-btn" data-section="news">Ver Todas</button>
+                    </div>
+                    <div class="track-grid">
+                        <div class="track-card">
+                            <div class="track-cover">📰</div>
+                            <div class="track-info">
+                                <div class="track-title">Novo Release R.A.V 02 em Produção</div>
+                                <div class="track-artist">Radial AV • Há 2 dias</div>
+                            </div>
+                        </div>
+                        <div class="track-card">
+                            <div class="track-cover">🎪</div>
+                            <div class="track-info">
+                                <div class="track-title">Radial Night Sessions</div>
+                                <div class="track-artist">Eventos • Há 1 semana</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+            </div>
+
+            <!-- Música (Pesquisa + Filtros unificados) -->
+            <div id="music-section" class="section">
+                <h2 class="section-title">🎵 Música</h2>
+                <div class="music-controls" style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; margin-bottom:0.75rem;">
+                    <input id="music-search-input" type="text" class="search-input" placeholder="🔍 Pesquisar músicas, artistas, releases e vídeos..." style="flex:1; min-width:200px;">
+                    <select id="music-type" class="form-input" title="Tipo" style="display:none;">
+                        <option value="all">Tudo</option>
+                        <option value="tracks">Músicas</option>
+                        <option value="artists">Artistas</option>
+                        <option value="labels">Editoras</option>
+                        <option value="releases">Releases</option>
+                        <option value="videos">Vídeos</option>
+                    </select>
+                    
+                    <select id="music-year" class="form-input" title="Ano" style="min-width:110px; display:none;" data-temp-hide="1">
+                        <option value="">Todos os anos</option>
+                    </select>
+                    <select id="music-label" class="form-input" title="Editora" style="min-width:140px; display:none;" data-temp-hide="1">
+                        <option value="">Todas as editoras</option>
+                    </select>
+                    <button id="music-filters-btn" class="btn btn-ghost btn-sm" type="button">Filtros</button>
+                    <select id="music-sort" class="form-input" title="Ordenar" style="display:none;">
+                        <option value="recent">Recentes</option>
+                        <option value="az">A‑Z</option>
+                    </select>
+                </div>
+                <div id="music-active-chips" class="chips-row"></div>
+                <div id="music-filters-panel" class="filters-panel" style="display:none;">
+                    <div class="filters-body">
+                        <div class="filter-group">
+                            <label class="filter-check"><input type="checkbox" value="tracks" id="facet-type-tracks"> Músicas</label>
+                            <label class="filter-check"><input type="checkbox" value="artists" id="facet-type-artists"> Artistas</label>
+                            <label class="filter-check"><input type="checkbox" value="labels" id="facet-type-labels"> Editoras</label>
+                            <label class="filter-check"><input type="checkbox" value="releases" id="facet-type-releases"> Releases</label>
+                            <label class="filter-check"><input type="checkbox" value="videos" id="facet-type-videos"> Vídeos</label>
+                        </div>
+                        <div class="filter-group">
+                            <div id="facet-labels-list" style="margin-top:0.5rem; display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:0.25rem;"></div>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-check"><input type="checkbox" id="facet-favorites"> Favoritos</label>
+                            <label class="filter-check">
+                                <select id="facet-sort" class="form-input">
+                                    <option value="recent">Recentes</option>
+                                    <option value="az">A‑Z</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="filter-actions">
+                            <button id="filters-clear" class="btn btn-ghost btn-sm" type="button">Limpar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="music-results" style="display:flex; flex-direction:column; gap:1rem;">
+                    <section id="music-results-tracks" class="music-group">
+                        <h3>🎵 Músicas</h3>
+                        <div class="track-grid" id="music-results-tracks-grid" data-grid></div>
+                    </section>
+                    <section id="music-results-artists" class="music-group">
+                        <h3>👥 Artistas</h3>
+                        <div class="track-grid" id="music-results-artists-grid" data-grid></div>
+                    </section>
+                    <section id="music-results-labels" class="music-group">
+                        <div class="section-header">
+                            <h3>🏷️ Editoras</h3>
+                            <button class="view-all-btn" onclick="showMusicWithFilter('labels')">Ver Todas</button>
+                        </div>
+                        <div class="track-grid" id="music-results-labels-grid" data-grid></div>
+                    </section>
+                    <section id="music-results-releases" class="music-group">
+                        <h3>💿 Releases</h3>
+                        <div class="track-grid" id="music-results-releases-grid" data-grid></div>
+                    </section>
+                    <section id="music-results-videos" class="music-group">
+                        <h3>📹 Vídeos</h3>
+                        <div class="videos-grid" id="music-results-videos-grid" data-grid></div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Biblioteca (Recentes, Favoritos, Playlists) -->
+            <div id="library-section" class="section">
+                <h2 class="section-title">📚 Biblioteca</h2>
+                <div class="library-tabs" style="display:flex; gap:0.5rem; margin-bottom:0.75rem;">
+                    <button class="btn btn-ghost btn-sm library-tab-btn active" data-tab="recent" type="button">🕒 Recentes</button>
+                    <button class="btn btn-ghost btn-sm library-tab-btn" data-tab="favorites" type="button">❤️ Favoritos</button>
+                    <button class="btn btn-ghost btn-sm library-tab-btn" data-tab="playlists" type="button">📁 Playlists</button>
+                </div>
+                <div id="library-panel-recent">
+                    <div class="track-list" id="recent-tracks"></div>
+                </div>
+                <div id="library-panel-favorites" style="display:none;">
+                    <div class="track-list" id="favorites-tracks"></div>
+                </div>
+                <div id="library-panel-playlists" style="display:none;">
+                    <div class="playlist-header">
+                        <h2 class="section-title">📁 Playlists</h2>
+                        <button class="create-playlist-btn" onclick="openCreatePlaylistModal()">➕ Nova Playlist</button>
+                    </div>
+                    <div class="playlist-grid" id="playlists-grid"></div>
+                </div>
+            </div>
+
+            <!-- Detalhes da Playlist -->
+            <div id="playlist-details-section" class="section">
+                <button class="back-btn" onclick="(window.goBack ? goBack() : (showSection('library'), setLibraryTab('playlists')))">← Voltar</button>
+                <div class="playlist-header">
+                    <h2 class="section-title" id="playlist-details-title">📁 Playlist</h2>
+                    <div class="playlist-actions">
+                        <button class="play-playlist-btn" id="play-playlist-btn" onclick="playPlaylist()">▶️ Tocar</button>
+                        <button class="btn btn-secondary" id="clear-playlist-btn" onclick="clearPlaylistTracksUI(window.currentPlaylistId)" title="Remover todas as músicas">🗑️ Limpar</button>
+                    </div>
+                </div>
+                <div class="track-list" id="playlist-details-tracks">
+                    <!-- Será preenchido pelo JavaScript -->
+                </div>
+            </div>
+
+            <!-- Releases -->
+            <div id="releases-section" class="section">
+                <h2 class="section-title">💿 Releases</h2>
+                <div class="track-grid" id="releases-grid"></div>
+            </div>
+
+            <!-- Detalhes do Release -->
+            <div id="release-details-section" class="section">
+                <button class="back-btn" onclick="showSection('releases')">← Voltar aos Releases</button>
+                <h2 class="section-title" id="release-details-title">💿 R.A.V 01</h2>
+                <div class="track-list" id="release-details-tracks">
+                    <!-- Será preenchido pelo JavaScript -->
+                </div>
+            </div>
+
+            <!-- Artistas -->
+            <div id="artists-section" class="section">
+                <h2 class="section-title">👥 Artistas</h2>
+                <div class="track-grid" id="artists-grid">
+                    <!-- Será preenchido pelo JavaScript -->
+                </div>
+            </div>
+
+            <!-- Detalhes do Artista -->
+            <div id="artist-details-section" class="section">
+                <!-- Será preenchido pelo JavaScript -->
+            </div>
+
+            <!-- Detalhes da Label (pública) -->
+            <div id="label-details-section" class="section">
+                <!-- Será preenchido pelo JavaScript -->
+            </div>
+
+            <!-- Admin (somente Admin Master) -->
+            <div id="admin-section" class="section">
+                <h2 class="section-title">🛠️ Admin</h2>
+                <div id="admin-guard" class="text-muted"></div>
+                <div id="admin-panels" style="display:none; display:flex; flex-direction:column; gap:1rem;">
+                    <div id="admin-tabs" class="library-tabs" style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                        <button class="btn btn-ghost btn-sm admin-tab active" data-tab="releases">Releases</button>
+                        <button class="btn btn-ghost btn-sm admin-tab" data-tab="artists">Artistas</button>
+                        <button class="btn btn-ghost btn-sm admin-tab" data-tab="labels">Editoras</button>
+                        <button class="btn btn-ghost btn-sm admin-tab" data-tab="allowlist">Allowlist</button>
+                    </div>
+                    <section id="admin-releases">
+                        <h3>💿 Releases</h3>
+                        <div class="track-list" id="admin-releases-list"></div>
+                    </section>
+                    <section id="admin-release-editor">
+                        <h3>✏️ Editor de Release</h3>
+                        <div class="form-group">
+                            <label class="form-label">ID</label>
+                            <input id="admin-rel-id" class="form-input" type="text" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Publicar em</label>
+                            <input id="admin-rel-publish" class="form-input" type="datetime-local">
+                        </div>
+                        <div class="form-group">
+                            <label class="filter-check"><input type="checkbox" id="admin-rel-featured"> Destaque</label>
+                        </div>
+                        <div class="form-actions" style="display:flex; gap:0.75rem; align-items:center;">
+                            <button class="btn btn-primary" id="admin-rel-save" type="button">Guardar</button>
+                            <span id="admin-rel-status" class="text-muted"></span>
+                        </div>
+                    </section>
+                    <section id="admin-tracks">
+                        <h3>🎵 Músicas do Release</h3>
+                        <div class="track-list" id="admin-tracks-list"></div>
+                    </section>
+                    <section id="admin-artists">
+                        <h3>👥 Artistas</h3>
+                        <div class="form-group">
+                            <label class="form-label">Pesquisar</label>
+                            <input id="admin-art-search" class="form-input" type="text" placeholder="Nome do artista…">
+                        </div>
+                        <div id="admin-art-status" class="text-muted" style="margin-bottom:0.5rem;"></div>
+                        <div class="track-list" id="admin-art-list"></div>
+                    </section>
+                    <section id="admin-labels" style="display:none;">
+                        <h3>🏷️ Editoras</h3>
+                        <div class="form-group">
+                            <label class="form-label">Pesquisar</label>
+                            <input id="admin-labels-search" class="form-input" type="text" placeholder="Nome da editora…">
+                        </div>
+                        <div class="form-actions" style="margin-bottom:0.5rem;">
+                            <button class="btn btn-secondary" id="admin-labels-create" type="button">Criar Editora</button>
+                        </div>
+                        <div id="admin-labels-status" class="text-muted" style="margin-bottom:0.5rem;"></div>
+                        <div class="track-list" id="admin-labels-list"></div>
+                    </section>
+                    <section id="admin-allowlist">
+                        <h3>✅ Allowlist de Upload</h3>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input id="admin-allow-email" class="form-input" type="email" placeholder="user@dominio.com">
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-primary" id="admin-allow-add" type="button">Adicionar</button>
+                        </div>
+                        <div id="admin-allow-status" class="text-muted"></div>
+                        <div class="track-list" id="admin-allow-list"></div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Label Admin (membros de editoras) -->
+            <div id="label-admin-section" class="section">
+                <h2 class="section-title">🏷️ Admin da Editora</h2>
+                <div id="label-admin-guard" class="text-muted"></div>
+                <div id="label-admin-panels" style="display:none; display:flex; flex-direction:column; gap:1rem;">
+                    <section>
+                        <h3>Selecionar Label</h3>
+                        <select id="label-admin-select" class="form-input" style="min-width:220px;"></select>
+                    </section>
+                    <div id="label-admin-tabs" class="library-tabs" style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                        <button class="btn btn-ghost btn-sm label-tab active" data-tab="profile">Perfil</button>
+                        <button class="btn btn-ghost btn-sm label-tab" data-tab="upload">Uploads</button>
+                        <button class="btn btn-ghost btn-sm label-tab" data-tab="releases">Releases</button>
+                        <button class="btn btn-ghost btn-sm label-tab" data-tab="members">Membros</button>
+                    </div>
+                    <section id="label-admin-upload">
+                        <h3>➕ Novo Release</h3>
+                        <div id="label-admin-upload-tabs" class="library-tabs" style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                            <button class="btn btn-ghost btn-sm upload-subtab active" data-subtab="meta" type="button">Metadados</button>
+                            <button class="btn btn-ghost btn-sm upload-subtab" data-subtab="tracks" type="button">Faixas</button>
+                        </div>
+                        <section id="label-admin-upload-meta">
+                            <div class="form-row" style="display:flex; gap:0.75rem; flex-wrap:wrap; align-items:flex-end;">
+                                <div class="form-group" style="flex:2; min-width:200px;">
+                                    <label class="form-label">Título</label>
+                                    <input id="label-admin-new-title" class="form-input" type="text" placeholder="Ex: R.A.V 03">
+                                </div>
+                                <div class="form-group" style="flex:2; min-width:200px;">
+                                    <label class="form-label">Artista principal</label>
+                                    <input id="label-admin-new-artist" class="form-input" type="text" placeholder="Ex: Reu.Ven">
+                                </div>
+                            </div>
+                            <div class="form-row" style="display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center; margin-top:0.25rem;">
+                                <div class="form-group" style="flex:1; min-width:220px; margin:0;">
+                                    <label class="filter-check"><input type="checkbox" id="label-admin-compilation"> Compilação (Vários Artistas)</label>
+                                </div>
+                            </div>
+                            <div class="form-row" style="display:flex; gap:0.75rem; flex-wrap:wrap; align-items:flex-end;">
+                                <div class="form-group" style="flex:1; min-width:120px;">
+                                    <label class="form-label">Ano</label>
+                                    <input id="label-admin-new-year" class="form-input" type="number" min="1900" max="2100" placeholder="2025">
+                                </div>
+                                <div class="form-group" style="flex:1; min-width:160px;">
+                                    <label class="form-label">Preço (release)</label>
+                                    <input id="label-admin-new-price" class="form-input" type="number" step="0.01" min="0" placeholder="5.00">
+                                </div>
+                                <div class="form-group" style="flex:1; min-width:220px;">
+                                    <label class="form-label">Data de lançamento</label>
+                                    <input id="label-admin-new-date" class="form-input" type="datetime-local" placeholder="AAAA-MM-DDThh:mm">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Descrição</label>
+                                <textarea id="label-admin-new-desc" class="form-textarea" rows="2" placeholder="Notas do release"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Capa (imagem)</label>
+                                <input id="label-admin-new-cover" class="form-input" type="file" accept="image/*">
+                                <div class="upload-progress" style="height:6px; background:#e5e7eb; border-radius:6px; overflow:hidden; display:none; margin-top:4px;">
+                                    <div class="bar" style="height:100%; width:0; background:#1e90ff;"></div>
+                                </div>
+                            </div>
+                        </section>
+                        <section id="label-admin-upload-tracks" style="display:none;">
+                            <h4 style="margin-top:0.25rem;">Faixas</h4>
+                            <div id="label-admin-tracks-container" class="track-list"></div>
+                            <div style="margin:0.5rem 0 1rem;">
+                                <button id="label-admin-add-track" type="button" class="btn btn-secondary btn-sm">+ Adicionar faixa</button>
+                                <input id="label-admin-bulk" type="file" accept="audio/*" multiple style="display:none">
+                                <button id="label-admin-pick-files" type="button" class="btn btn-ghost btn-sm">Selecionar ficheiros…</button>
+                                <input id="label-admin-folder" type="file" webkitdirectory directory multiple style="display:none">
+                                <button id="label-admin-pick-folder" type="button" class="btn btn-ghost btn-sm">Selecionar pasta…</button>
+                            </div>
+                            <div class="form-actions" style="display:flex; gap:0.75rem; align-items:center;">
+                                <button id="label-admin-submit-upload" type="button" class="btn btn-primary">Gravar</button>
+                                <span id="label-admin-upload-status" class="text-muted"></span>
+                            </div>
+                        </section>
+                    </section>
+                    <section id="label-admin-releases">
+                        <h3>💿 Releases da Label</h3>
+                        <div class="form-actions" style="display:flex; gap:0.5rem; align-items:center; margin:0.25rem 0 0.5rem 0;">
+                            <button id="label-admin-releases-backfill" class="btn btn-ghost btn-sm" type="button">Backfill Storage Meta</button>
+                            <span id="label-admin-releases-status" class="text-muted"></span>
+                        </div>
+                        <div class="track-list" id="label-admin-releases-list"></div>
+                    </section>
+                    <section id="label-admin-release-editor">
+                        <h3>✏️ Editor de Release</h3>
+                        <div class="form-group">
+                            <label class="form-label">ID</label>
+                            <input id="label-admin-rel-id" class="form-input" type="text" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Título do release</label>
+                            <input id="label-admin-rel-title" class="form-input" type="text" placeholder="Ex: R.A.V 03">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Ano</label>
+                            <input id="label-admin-rel-year" class="form-input" type="number" min="1900" max="2100" placeholder="2025">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Publicar em</label>
+                            <input id="label-admin-rel-publish" class="form-input" type="datetime-local">
+                        </div>
+                        <div class="form-row" style="display:flex; gap:0.75rem; flex-wrap:wrap; align-items:flex-end;">
+                            <div class="form-group" style="flex:2; min-width:200px;">
+                                <label class="form-label">Artista do release (global)</label>
+                                <input id="label-admin-rel-artist" class="form-input" type="text" placeholder="Ex: Reu.Ven ou Vários Artistas">
+                            </div>
+                            <div class="form-actions" style="margin:0;">
+                                <button class="btn btn-secondary" id="label-admin-apply-artist" type="button">Aplicar a todas as faixas</button>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-primary" id="label-admin-rel-save" type="button">Guardar</button>
+                            <button class="btn btn-ghost" id="label-admin-rel-delete" type="button">🗑️ Eliminar Release</button>
+                        </div>
+                        <div id="label-admin-rel-status" class="text-muted"></div>
+                    </section>
+                    <section id="label-admin-tracks">
+                        <h3>🎵 Músicas do Release</h3>
+                        <div class="track-list" id="label-admin-tracks-list"></div>
+                    </section>
+                    <section id="label-admin-profile">
+                        <h3>🗂️ Perfil da Label</h3>
+                        <div class="form-group">
+                            <label class="form-label">Nome</label>
+                            <input id="label-admin-prof-name" class="form-input" type="text">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Website</label>
+                            <input id="label-admin-prof-url" class="form-input" type="url" placeholder="https://…">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Descrição</label>
+                            <textarea id="label-admin-prof-desc" class="form-textarea" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Logo</label>
+                            <input id="label-admin-prof-logo" class="form-input" type="file" accept="image/*">
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-primary" id="label-admin-prof-save" type="button">Guardar</button>
+                        </div>
+                        <div id="label-admin-prof-status" class="text-muted"></div>
+                    </section>
+                    <section id="label-admin-members" style="display:none;">
+                        <h3>👥 Membros</h3>
+                        <div class="form-row" style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:flex-end;">
+                            <div class="form-group" style="flex:2; min-width:220px;">
+                                <label class="form-label">Email</label>
+                                <input id="label-admin-member-email" class="form-input" type="email" placeholder="user@dominio.com">
+                            </div>
+                            <div class="form-actions" style="margin:0;">
+                                <button class="btn btn-secondary" id="label-admin-member-add" type="button">Adicionar</button>
+                            </div>
+                        </div>
+                        <div id="label-admin-members-status" class="text-muted" style="margin:0.5rem 0;"></div>
+                        <div class="track-list" id="label-admin-members-list"></div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Vídeos -->
+            <div id="videos-section" class="section">
+                <h2 class="section-title">📹 Vídeos das Noites Radial</h2>
+                <div class="videos-grid" id="videos-grid">
+                    <!-- Será preenchido pelo JavaScript -->
+                </div>
+            </div>
+
+            <!-- Eventos -->
+            <div id="events-section" class="section">
+                <div class="events-list" id="events-grid">
+                    <div class="event-card">
+                        <div class="event-info">
+                            <h3>Radial @ Art Haus</h3>
+                            <p class="event-date">15 Setembro 2024 • 23:00</p>
+                        </div>
+                        <button class="event-btn" data-external-link="https://shotgun.live/en/venues/radial-av">
+                            Comprar Bilhetes
+                        </button>
+                    </div>
+                    <div class="event-card">
+                        <div class="event-info">
+                            <h3>Radial Night Sessions</h3>
+                            <p class="event-date">22 Setembro 2024 • 22:00</p>
+                        </div>
+                        <button class="event-btn" data-external-link="https://shotgun.live/en/venues/radial-av">
+                            Comprar Bilhetes
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notícias -->
+            <div id="news-section" class="section" style="display:none;">
+                <h2 class="section-title">📰 Notícias</h2>
+                <div class="track-grid" id="news-grid">
+                    <div class="track-card">
+                        <div class="track-cover">📰</div>
+                        <div class="track-info">
+                            <div class="track-title">Novo Release R.A.V 02 em Produção</div>
+                            <div class="track-artist">Radial AV • Há 2 dias</div>
+                        </div>
+                    </div>
+                    <div class="track-card">
+                        <div class="track-cover">🎪</div>
+                        <div class="track-info">
+                            <div class="track-title">Radial Night Sessions</div>
+                            <div class="track-artist">Eventos • Há 1 semana</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+
+            <!-- Radial FM (player sincronizado) -->
+            <div id="fm-section" class="section">
+                <div class="fm-left">
+                    <h2 class="section-title">📻 Radial FM</h2>
+                    <div class="fm-host-indicator" id="fm-host-indicator" style="display:inline-block; margin:0.25rem 0 0.75rem 0;"></div>
+                    <p class="section-subtitle">Sintoniza para ouvir em conjunto. Um utilizador atua como host; os restantes seguem o estado do host.</p>
+
+                    <div class="fm-controls" style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.75rem;">
+                        <button class="btn btn-secondary btn-sm" id="fm-listen">Sintonizar</button>
+                        <button class="btn btn-ghost btn-sm" id="fm-stop-listen">Parar</button>
+                        <button class="btn btn-primary btn-sm" id="fm-become-host">Tornar-me Host</button>
+                        <button class="btn btn-ghost btn-sm" id="fm-leave-host">Sair de Host</button>
+                    </div>
+
+                    <div class="fm-status" id="fm-status" style="color:#b3b3b3; font-size:0.95rem; margin-bottom:0.5rem;">Modo: — • Host atual: — • Ligação: —</div>
+                    <div class="fm-now" id="fm-now" style="font-size:1rem; margin-bottom:0.5rem;">Agora: —</div>
+                    <div class="fm-help" style="color:#b3b3b3; font-size:0.9rem;">Usa as tuas credenciais Supabase (as mesmas do Chat). Se não estiverem definidas, configura-as na secção Chat.</div>
+                </div>
+
+                <!-- Chat embutido no FM -->
+                <div class="fm-chat" style="margin-top:1rem;">
+                    <!-- Setup de credenciais -->
+                    <div id="chat-setup" class="chat-setup" style="display:none">
+                        <p class="section-subtitle">Configura o Supabase para ativar o chat em tempo real.</p>
+                        <form id="chat-setup-form" class="chat-setup-form">
+                            <div class="form-group">
+                                <label class="form-label">Supabase URL</label>
+                                <input id="chat-supabase-url" class="form-input" type="text" placeholder="https://xxx.supabase.co" required autocomplete="username">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Supabase Public Anon Key</label>
+                                <input id="chat-supabase-key" class="form-input" type="password" placeholder="eyJhbGciOi..." required autocomplete="current-password">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Nome a mostrar</label>
+                                <input id="chat-display-name" class="form-input" type="text" placeholder="Ex: Nicolas" autocomplete="nickname">
+                            </div>
+                            <div class="modal-actions">
+                                <button type="submit" class="btn btn-primary">Guardar & Ativar</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Container do chat -->
+                    <div id="chat-container" class="chat-container" style="display:none">
+                        <div class="chat-header">
+                            <div class="chat-title">Radial Chat</div>
+                            <div class="chat-status" id="chat-online">0 online</div>
+                            <button class="btn btn-ghost btn-sm" id="chat-pin-btn" title="Fixar anúncio">📌</button>
+                        </div>
+                        <div class="chat-pin-editor" id="chat-pin-editor" style="display:none">
+                            <input id="chat-pin-input" class="chat-input" type="text" placeholder="Escreve o anúncio a fixar..." maxlength="200">
+                            <div class="chat-pin-actions">
+                                <button class="btn btn-primary btn-sm" id="chat-pin-save" type="button">Guardar</button>
+                                <button class="btn btn-ghost btn-sm" id="chat-pin-clear" type="button">Limpar</button>
+                                <button class="btn btn-ghost btn-sm" id="chat-pin-cancel" type="button">Cancelar</button>
+                            </div>
+                        </div>
+                        <div class="chat-pinned" id="chat-pinned" style="display:none"></div>
+                        <div class="chat-messages" id="chat-messages"></div>
+                        <div class="chat-typing" id="chat-typing" style="display:none; color:#b3b3b3; font-size:0.9rem; margin-top:0.25rem;"></div>
+                        <form class="chat-input-form" id="chat-input-form" autocomplete="off">
+                            <input id="chat-input" class="chat-input" type="text" placeholder="Escreve uma mensagem..." maxlength="500">
+                            <button class="btn btn-primary btn-sm" type="submit">Enviar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About -->
+            <div id="about-section" class="section">
+                <h2 class="section-title">ℹ️ About</h2>
+                
+                <p>O conceito Radial surge da vontade de aliar a música e a arte visual enquanto veículos de expressão, tendo como núcleo o despertar da individualidade que atua em prol de um centro: a comunidade e a sua força criativa. O termo Radial simboliza o ponto central de cada indivíduo em que o núcleo (a sua identidade e criatividade) irradia para o mundo em redor.</p>
+                <p>A verdadeira materialização desta experiência sonora imersiva que permite a cada participante expandir a sua visão e ir mais além nas suas perceções e interpretações, descobrindo novas facetas de si mesmo e do mundo à sua volta. Cada um dos participantes é um elemento especial recebido por uma atmosfera acolhedora e inclusiva. A empatia tem um lugar de destaque e, na energia da celebração, é feito o convite à expressão de cada um.</p>
+                <p>É uma celebração de um ponto que todas as pessoas têm em comum, a criatividade, e uma oportunidade de irradiar esta energia criando um ambiente único e momentos que não sairão da memória nos próximos tempos.</p>
+
+                <h3>Radial Label</h3>
+                <p>Apresentamos a nossa editora Radial (RAV), um espaço dedicado à inovação e autenticidade na música eletrónica. Esta é a nossa missão: criar, desafiar e transformar o som.</p>
+                <p>Na Radial, acreditamos que a música eletrónica é um espaço infinito de inovação, onde cada batida é uma oportunidade de criação. Estamos aqui para conectar mentes criativas e dar voz àqueles que não têm medo de desafiar o óbvio. Sabemos que o verdadeiro poder da música eletrónica está na autenticidade e na capacidade de explorar o desconhecido. É isso que procuramos, é isso que celebramos. Se és daqueles que desafiam o convencional, que procuram sempre criar algo único, então este espaço também é teu. Juntos, queremos ir além.</p>
+
+                <h3>Contactos</h3>
+                <p>Email: <a href="mailto:radial.audiov@gmail.com">radial.audiov@gmail.com</a><br>Telefone: +351 933 725 110</p>
+                <div class="socials-grid">
+                    <div class="social-card" onclick="openExternalLink('https://www.instagram.com/radial.av/?hl=en')">
+                        <span class="social-icon">📷</span>
+                        <div class="social-name">Instagram</div>
+                        <div class="social-handle">@radial.av</div>
+                    </div>
+                    <div class="social-card" onclick="openExternalLink('https://www.youtube.com/@RadialAV')">
+                        <span class="social-icon">📺</span>
+                        <div class="social-name">YouTube</div>
+                        <div class="social-handle">@RadialAV</div>
+                    </div>
+                    <div class="social-card" onclick="openExternalLink('https://radialav.github.io/info/')">
+                        <span class="social-icon">🌐</span>
+                        <div class="social-name">Website</div>
+                        <div class="social-handle">radialav.github.io</div>
+                    </div>
+                    <div class="social-card" onclick="openExternalLink('https://shotgun.live/en/venues/radial-av')">
+                        <span class="social-icon">🎫</span>
+                        <div class="social-name">Shotgun</div>
+                        <div class="social-handle">Eventos</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Player de Música -->
+        <div class="player" id="player">
+            <div class="player-info" onclick="toggleExpandedPlayer()">
+                <div class="player-cover" id="player-cover">S</div>
+                <div class="player-details">
+                    <div class="player-title" id="player-title">Simbaye</div>
+                    <div class="player-artist" id="player-artist">Reu.Ven</div>
+                </div>
+            </div>
+            <div class="player-controls">
+                <button class="control-btn" id="prev-btn" onclick="previousTrack()">⏮️</button>
+                <button class="control-btn play-pause" id="play-btn" onclick="togglePlay()">⏸️</button>
+                <div class="next-with-badges">
+                    <button class="control-btn" id="next-btn" onclick="nextTrack()">⏭️</button>
+                    <span class="queue-badge upnext" id="queue-upnext-badge" style="display:none;">0</span>
+                    <span class="queue-badge queue" id="queue-queue-badge" style="display:none;">0</span>
+                </div>
+                <button class="control-btn shuffle" onclick="toggleShuffle()">🔀</button>
+                <button class="control-btn repeat" onclick="toggleRepeat()">🔁</button>
+                <button class="control-btn chat" onclick="showSection('fm')" title="Chat/Lyrics">💬</button>
+                <button class="control-btn buy" id="buy-btn" onclick="openBuyForCurrent()" title="Apoiar/Comprar">💝</button>
+            </div>
+            <div class="player-volume">
+                <button class="icon-btn" id="queue-open-btn" title="Fila">≡</button>
+                <span>🔊</span>
+                <input type="range" class="volume-slider" min="0" max="100" value="70" oninput="setVolume(this.value)">
+                <button class="icon-btn" id="fullscreen-btn" title="Fullscreen" onclick="toggleExpandedPlayer()">⛶</button>
+            </div>
+            <div class="waveform"><canvas id="waveform-canvas"></canvas></div>
+            
+            <!-- Barra de progresso (só aparece no player expandido) -->
+            <div class="progress-container">
+                <div class="progress-bar" onclick="seekTo(event)">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-time">
+                    <span id="current-time">0:00</span>
+                    <span id="total-time">0:00</span>
+                </div>
+            </div>
+            
+            <button class="close-expanded" onclick="toggleExpandedPlayer()">⌄</button>
+        </div>
+    </div>
+
+    <div id="intro-splash">
+        <div class="intro-content">
+            <img src="assets/logo.png" alt="Radial AV" class="intro-logo">
+            <div class="intro-title">RADIAL AV</div>
+            <div class="intro-subtitle">MÚSICA E ARTE EM SINTONIA</div>
+            <div class="intro-subtitle">FUSÃO DE BATIDAS ELETRÓNICAS E VISUAIS</div>
+        </div>
+    </div>
+
+    <!-- Modal para Criar Playlist -->
+    <div id="createPlaylistModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">➕ Nova Playlist</h3>
+                <button class="modal-close" onclick="closeCreatePlaylistModal()">×</button>
+            </div>
+            <form onsubmit="createPlaylist(event)">
+                <div class="form-group">
+                    <label class="form-label">Nome da Playlist</label>
+                    <input type="text" class="form-input" id="playlistName" placeholder="Ex: Minhas Favoritas" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descrição (opcional)</label>
+                    <textarea class="form-textarea" id="playlistDescription" placeholder="Descreve a tua playlist..."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeCreatePlaylistModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Criar Playlist</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Adicionar à Playlist -->
+    <div id="addToPlaylistModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">➕ Adicionar à Playlist</h3>
+                <button class="modal-close" onclick="closeAddToPlaylistModal()">×</button>
+            </div>
+            <div id="playlist-selection">
+                <!-- Será preenchido pelo JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Player de Vídeo -->
+    <div id="video-player-modal" class="modal">
+        <div class="modal-content video-modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="video-modal-title">📹 Vídeo</h3>
+                <button class="modal-close" onclick="closeVideoPlayer()">×</button>
+            </div>
+            <div class="video-player-container" id="video-player-container">
+                <!-- Player será inserido aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Editar Playlist -->
+    <div id="editPlaylistModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">✏️ Editar Playlist</h3>
+                <button class="modal-close" onclick="closeEditPlaylistModal()">×</button>
+            </div>
+            <form onsubmit="savePlaylistEdit(event)">
+                <div class="form-group">
+                    <label class="form-label">Nome da Playlist</label>
+                    <input type="text" class="form-input" id="editPlaylistName" placeholder="Ex: Minhas Favoritas" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descrição (opcional)</label>
+                    <textarea class="form-textarea" id="editPlaylistDescription" placeholder="Descreve a tua playlist..."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditPlaylistModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal do Carrinho -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">🛒 Carrinho</h3>
+                <button class="modal-close" onclick="closeModal('cartModal')">×</button>
+            </div>
+            <div id="cart-items" class="track-list"></div>
+            <div class="modal-actions">
+                <button class="btn btn-ghost" type="button" onclick="clearCart()">Limpar</button>
+                <button class="btn btn-primary" type="button" onclick="proceedToCheckout()">Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Checkout (placeholder) -->
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">🧾 Checkout</h3>
+                <button class="modal-close" onclick="closeModal('checkoutModal')">×</button>
+            </div>
+            <div id="checkout-summary" class="track-list"></div>
+            <div class="modal-actions">
+                <button class="btn btn-ghost" type="button" onclick="closeModal('checkoutModal'); openCart();">Voltar</button>
+                <button class="btn btn-primary" type="button" onclick="confirmCheckout()">Confirmar compra</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Definições / Perfil -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">⚙️ Definições</h3>
+                <button class="modal-close" onclick="closeModal('settingsModal')">×</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Conta</label>
+                <div id="settings-account" class="text-muted"></div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Nickname</label>
+                <input id="settings-nickname" class="form-input" type="text" placeholder="O teu nome no chat e na app" maxlength="40">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tema</label>
+                <button id="theme-toggle" class="theme-toggle btn btn-ghost btn-sm" type="button" title="Alternar tema">☀️</button>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" type="button" onclick="closeModal('settingsModal')">Cancelar</button>
+                <button id="settings-logout" class="btn btn-ghost" type="button">Sair</button>
+                <button id="settings-save" class="btn btn-primary" type="button">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notificação Toast -->
+    <div id="toast-container"></div>
+
+    <script>
+      window.R2_API_URL = 'https://radialworker.radial-audiov.workers.dev';
+    </script>
+    <!-- Scripts Modulares -->
+    <script type="module" src="js/utils.js"></script>
+    <script type="module" src="js/data.js"></script>
+    <script type="module" src="js/ui/render.js"></script>
+    <script type="module" src="js/player.js"></script>
+    <script type="module" src="js/navigation.js"></script>
+    <script type="module" src="js/sections/home.js"></script>
+    <script type="module" src="js/sections/favorites.js"></script>
+    <script type="module" src="js/sections/recent.js"></script>
+    <script type="module" src="js/sections/playlists.js"></script>
+    <script type="module" src="js/sections/releases.js"></script>
+    <script type="module" src="js/sections/artists.js"></script>
+    <script type="module" src="js/sections/videos.js"></script>
+    <script type="module" src="js/sections/music.js"></script>
+    <script type="module" src="js/sections/fm.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/sections/chat.js"></script>
+    <script type="module" src="js/cart.js"></script>
+    <script type="module" src="js/settings.js"></script>
+    <script type="module" src="js/app.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script src="js/sw-register.js"></script>
+    <!-- Splash failsafe: hide intro in case of unexpected init error -->
+    <script>
+      window.addEventListener('DOMContentLoaded', function(){
+        setTimeout(function(){ try { var s = document.getElementById('intro-splash'); if (s) s.classList.add('hidden'); } catch(e){} }, 3500);
+      });
+    </script>
+  </body>
+</html>

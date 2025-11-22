@@ -1,0 +1,94 @@
+/* css/layout.css */
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 100dvh;
+    max-width: 100vw;
+    overflow: hidden;
+}
+
+.header {
+    background: linear-gradient(180deg, var(--header-grad-top), var(--header-grad-bottom));
+    border-bottom: 1px solid var(--border);
+    padding: calc(0.5rem + env(safe-area-inset-top, 0px)) 1rem 0.75rem;
+    flex-shrink: 0;
+    z-index: 100;
+    position: relative;
+}
+
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1rem;
+    padding-bottom: calc(var(--player-height, 112px) + 16px); /* Altura do player + folga */
+}
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+.player {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #111111;
+    border-top: 1px solid #333333;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    z-index: 200;
+    transition: transform 0.3s ease;
+}
+
+.player.expanded {
+    transform: translateY(0);
+    height: 85vh;
+    max-height: none;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom, 0px));
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    overflow-y: auto;
+}
+
+/* Media Queries para Responsividade */
+
+@media (max-width: 768px) {
+    .header {
+        padding: 0.5rem;
+    }
+
+    .main-content {
+        padding: 0.5rem;
+        padding-bottom: calc(var(--player-height, 96px) + 12px);
+    }
+
+    .player {
+        padding: 0.5rem;
+    }
+}
+
+@media (max-width: 600px) {
+  /* Expanded behaves like footer on mobile */
+  .player.expanded {
+    height: auto;
+    max-height: none;
+    padding: 0.5rem;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    overflow-y: visible;
+  }
+  .player.expanded .close-expanded { display: none !important; }
+}

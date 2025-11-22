@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limpar Cache - Radial AV</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .status {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+        .status.info {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 2px solid #1976d2;
+        }
+        .status.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 2px solid #2e7d32;
+        }
+        .status.error {
+            background: #ffebee;
+            color: #c62828;
+            border: 2px solid #c62828;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 10px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+        }
+        .steps {
+            text-align: left;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .steps li {
+            margin: 10px 0;
+            padding-left: 10px;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .emoji {
+            font-size: 48px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="emoji">🧹</div>
+        <h1>Limpar Cache da Aplicação</h1>
+        
+        <div id="status" class="status info">
+            Pronto para limpar o cache
+        </div>
+
+        <div id="loader" class="loader" style="display: none;"></div>
+
+        <div class="steps">
+            <strong>O que será feito:</strong>
+            <ol>
+                <li>Desregistar Service Worker antigo</li>
+                <li>Limpar todo o cache do browser</li>
+                <li>Limpar localStorage</li>
+                <li>Recarregar aplicação atualizada</li>
+            </ol>
+        </div>
+
+        <button id="clearBtn" onclick="clearAll()">
+            🚀 Limpar e Atualizar
+        </button>
+        
+        <button class="btn-secondary" onclick="manualClear()">
+            📖 Instruções Manuais
+        </button>
+
+        <button class="btn-secondary" onclick="window.location.href='/'">
+            ← Voltar à App
+        </button>
+    </div>
+
+    <script>
+        async function clearAll() {
+            const statusDiv = document.getElementById('status');
+            const loader = document.getElementById('loader');
+            const clearBtn = document.getElementById('clearBtn');
+            
+            clearBtn.disabled = true;
+            loader.style.display = 'block';
+            
+            try {
+                statusDiv.className = 'status info';
+                statusDiv.textContent = '⏳ A limpar Service Workers...';
+                
+                // 1. Desregistar todos os Service Workers
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (let registration of registrations) {
+                        await registration.unregister();
+                    }
+                }
+                
+                await sleep(500);
+                statusDiv.textContent = '⏳ A limpar caches do browser...';
+                
+                // 2. Limpar todos os caches
+                const cacheNames = await caches.keys();
+                for (let name of cacheNames) {
+                    await caches.delete(name);
+                }
+                
+                await sleep(500);
+                statusDiv.textContent = '⏳ A limpar dados locais...';
+                
+                // 3. Limpar localStorage (OPCIONAL - comentado para manter favoritos/playlists)
+                // localStorage.clear();
+                
+                await sleep(500);
+                statusDiv.className = 'status success';
+                statusDiv.textContent = '✅ Cache limpo com sucesso! A recarregar...';
+                
+                // 4. Recarregar a página com cache forçado
+                setTimeout(() => {
+                    window.location.href = '/?nocache=' + Date.now();
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Erro ao limpar cache:', error);
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ Erro: ' + error.message;
+                clearBtn.disabled = false;
+                loader.style.display = 'none';
+            }
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function manualClear() {
+            const instructions = `
+═══════════════════════════════════════
+   INSTRUÇÕES PARA LIMPAR CACHE
+═══════════════════════════════════════
+
+🔹 CHROME / EDGE:
+   1. Pressiona: Ctrl + Shift + Delete
+   2. Escolhe: "Todo o período"
+   3. Marca: ✓ Imagens e ficheiros em cache
+   4. Clica: Limpar dados
+   5. Volta à app e pressiona: Ctrl + F5
+
+🔹 FIREFOX:
+   1. Pressiona: Ctrl + Shift + Delete
+   2. Escolhe: "Tudo"
+   3. Marca: ✓ Cache
+   4. Clica: Limpar agora
+   5. Volta à app e pressiona: Ctrl + F5
+
+🔹 SAFARI:
+   1. Menu: Desenvolver → Vazio de Caches
+   2. Ou: ⌘ + ⌥ + E
+   3. Volta à app e pressiona: ⌘ + R
+
+🔹 MOBILE (Chrome/Safari):
+   1. Abre definições do browser
+   2. Privacidade → Limpar dados
+   3. Escolhe: Cache/Dados de sites
+   4. Limpa e volta à app
+
+═══════════════════════════════════════
+
+💡 ATALHOS ÚTEIS:
+   • Ctrl + F5  → Refresh forçado (Windows)
+   • ⌘ + Shift + R → Refresh forçado (Mac)
+   • Ctrl + Shift + Delete → Limpar dados
+
+═══════════════════════════════════════
+            `;
+            alert(instructions);
+        }
+
+        // Auto-detectar problemas
+        window.addEventListener('load', async () => {
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                if (registrations.length > 0) {
+                    const statusDiv = document.getElementById('status');
+                    statusDiv.innerHTML = `
+                        ⚠️ ${registrations.length} Service Worker(s) detectado(s)<br>
+                        <small>Recomendado limpar para aplicar atualizações</small>
+                    `;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
